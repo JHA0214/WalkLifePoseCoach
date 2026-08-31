@@ -21,6 +21,29 @@
     padding: 6px 10px;
     font-size: 13px;
   }
+
+  .controls {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .controls h2 {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .controls h3 {
+    font-size: 13px;
+  }
+
+  .controls label,
+  .status-info,
+  .status-error,
+  .status-message,
+  .guideline-list li,
+  .match-status {
+    font-size: 12px;
+  }
 }
 
 .app-header {
