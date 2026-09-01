@@ -3,8 +3,9 @@ import type { NormalizedLandmark } from "@mediapipe/tasks-vision";
 import { denormalizePoint } from "../guideline/normalize";
 import type { Guideline } from "../guideline/types";
 
-// BlazePose 33포인트 중 0~10번은 얼굴(코/눈/귀/입) 랜드마크 — 점 표시에서 제외한다.
+// BlazePose 33포인트 중 0~10번은 얼굴(코/눈/귀/입), 15~22번은 손(손목/손가락) 랜드마크 — 점 표시에서 제외한다.
 const FACE_LANDMARK_COUNT = 11;
+const HAND_LANDMARK_RANGE = [15, 22] as const;
 
 const CONNECTIONS: [number, number][] = [
   [11, 12],
@@ -76,11 +77,13 @@ export function PoseCanvas({ videoRef, landmarks, guideline, isInside }: PoseCan
       }
 
       ctx.fillStyle = "#facc15";
-      for (const p of landmarks.slice(FACE_LANDMARK_COUNT)) {
+      landmarks.forEach((p, i) => {
+        if (i < FACE_LANDMARK_COUNT) return;
+        if (i >= HAND_LANDMARK_RANGE[0] && i <= HAND_LANDMARK_RANGE[1]) return;
         ctx.beginPath();
         ctx.arc(p.x * width, p.y * height, 4, 0, Math.PI * 2);
         ctx.fill();
-      }
+      });
     }
   }, [videoRef, landmarks, guideline, isInside]);
 
