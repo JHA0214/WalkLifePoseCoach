@@ -1,6 +1,7 @@
 import { useEffect, useRef, type RefObject } from "react";
 import type { NormalizedLandmark } from "@mediapipe/tasks-vision";
-import { denormalizePoint } from "../guideline/normalize";
+import { denormalizePoint, getCenter } from "../guideline/normalize";
+import { computeJointAngles } from "../guideline/angles";
 import type { Guideline } from "../guideline/types";
 
 // BlazePose 33포인트 중 0~10번은 얼굴(코/눈/귀/입), 15~22번은 손(손목/손가락) 랜드마크 — 점 표시에서 제외한다.
@@ -84,6 +85,35 @@ export function PoseCanvas({ videoRef, landmarks, guideline, isInside }: PoseCan
         ctx.arc(p.x * width, p.y * height, 4, 0, Math.PI * 2);
         ctx.fill();
       });
+
+      // 관절 각도 표시(어깨: 몸통과의 각도, 엉덩이: 지면 수직선과의 각도)
+      const center = getCenter(landmarks);
+      const cx = center.x * width;
+      const cy = center.y * height;
+      ctx.font = "bold 14px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      for (const { vertex, degrees } of computeJointAngles(landmarks)) {
+        const vx = vertex.x * width;
+        const vy = vertex.y * height;
+        let dx = vx - cx;
+        let dy = vy - cy;
+        const len = Math.hypot(dx, dy) || 1;
+        dx = (dx / len) * 22;
+        dy = (dy / len) * 22;
+        const label = `${Math.round(degrees)}°`;
+
+        // canvas 엘리먼트 자체가 CSS로 좌우반전되어 있으므로, 텍스트를 미리 반전해서 그려야 화면에는 정상으로 보인다.
+        ctx.save();
+        ctx.translate(vx + dx, vy + dy);
+        ctx.scale(-1, 1);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "rgba(15, 23, 42, 0.85)";
+        ctx.strokeText(label, 0, 0);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(label, 0, 0);
+        ctx.restore();
+      }
     }
   }, [videoRef, landmarks, guideline, isInside]);
 
