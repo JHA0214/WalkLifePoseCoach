@@ -88,6 +88,44 @@ guidelinesRouter.post("/", (req, res) => {
   res.status(201).json(guideline);
 });
 
+guidelinesRouter.put("/:id", (req, res) => {
+  const { name, targetJoint, tolerance, path } = req.body ?? {};
+
+  if (typeof name !== "string" || !name.trim()) {
+    res.status(400).json({ error: "name is required" });
+    return;
+  }
+  if (!TARGET_JOINTS.includes(targetJoint)) {
+    res.status(400).json({ error: `targetJoint must be one of ${TARGET_JOINTS.join(", ")}` });
+    return;
+  }
+  if (typeof tolerance !== "number" || tolerance <= 0) {
+    res.status(400).json({ error: "tolerance must be a positive number" });
+    return;
+  }
+  if (!Array.isArray(path) || path.length < 2) {
+    res.status(400).json({ error: "path must contain at least 2 points" });
+    return;
+  }
+
+  const result = db
+    .prepare(
+      `UPDATE guidelines SET name = ?, target_joint = ?, tolerance = ?, path_json = ?
+       WHERE id = ?`
+    )
+    .run(name.trim(), targetJoint, tolerance, JSON.stringify(path), req.params.id);
+
+  if (result.changes === 0) {
+    res.status(404).json({ error: "guideline not found" });
+    return;
+  }
+
+  const row = db
+    .prepare("SELECT * FROM guidelines WHERE id = ?")
+    .get(req.params.id) as GuidelineRow;
+  res.json(rowToGuideline(row));
+});
+
 guidelinesRouter.delete("/:id", (req, res) => {
   const result = db.prepare("DELETE FROM guidelines WHERE id = ?").run(req.params.id);
   if (result.changes === 0) {

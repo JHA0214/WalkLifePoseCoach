@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { NormalizedLandmark } from "@mediapipe/tasks-vision";
 import { normalizeJointPosition } from "../guideline/normalize";
+import { simplifyPath } from "../guideline/simplify";
 import type { PathPoint, TargetJoint, Guideline } from "../guideline/types";
-import { createGuideline, deleteGuideline, fetchGuidelines } from "../api/guidelines";
+import { createGuideline, deleteGuideline, fetchGuidelines, updateGuideline } from "../api/guidelines";
 
 const JOINT_LABELS: Record<TargetJoint, string> = {
   left_wrist: "왼팔 (손목)",
@@ -23,6 +24,7 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
   const [tolerance, setTolerance] = useState(0.15);
   const [guidelines, setGuidelines] = useState<Guideline[]>([]);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const recordingStartRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -61,26 +63,51 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
       setStatusMessage("녹화된 동작이 너무 짧습니다. 다시 녹화해주세요");
       return;
     }
+    const draft = {
+      name: name.trim(),
+      targetJoint,
+      tolerance,
+      path: simplifyPath(recordedPath),
+    };
     try {
-      const saved = await createGuideline({
-        name: name.trim(),
-        targetJoint,
-        tolerance,
-        path: recordedPath,
-      });
-      setGuidelines((prev) => [saved, ...prev]);
+      if (editingId) {
+        const updated = await updateGuideline(editingId, draft);
+        setGuidelines((prev) => prev.map((g) => (g.id === editingId ? updated : g)));
+        setStatusMessage(`"${updated.name}" 가이드라인이 수정되었습니다`);
+        setEditingId(null);
+      } else {
+        const saved = await createGuideline(draft);
+        setGuidelines((prev) => [saved, ...prev]);
+        setStatusMessage(`"${saved.name}" 가이드라인이 저장되었습니다`);
+      }
       setRecordedPath([]);
       setName("");
-      setStatusMessage(`"${saved.name}" 가이드라인이 저장되었습니다`);
     } catch (err) {
       setStatusMessage(err instanceof Error ? err.message : "저장에 실패했습니다");
     }
+  }
+
+  function handleEdit(g: Guideline) {
+    setEditingId(g.id);
+    setName(g.name);
+    setTargetJoint(g.targetJoint);
+    setTolerance(g.tolerance);
+    setRecordedPath(g.path);
+    setStatusMessage(`"${g.name}" 수정 중입니다. 이름/허용오차를 바꾸거나 다시 녹화한 뒤 저장하세요`);
+  }
+
+  function handleCancelEdit() {
+    setEditingId(null);
+    setRecordedPath([]);
+    setName("");
+    setStatusMessage(null);
   }
 
   async function handleDelete(id: string) {
     try {
       await deleteGuideline(id);
       setGuidelines((prev) => prev.filter((g) => g.id !== id));
+      if (editingId === id) handleCancelEdit();
     } catch (err) {
       setStatusMessage(err instanceof Error ? err.message : "삭제에 실패했습니다");
     }
@@ -119,6 +146,7 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
 
       {!recording && recordedPath.length > 0 && (
         <div className="save-form">
+          {editingId && <p className="status-info">수정 중인 가이드라인입니다</p>}
           <label>
             가이드라인 이름
             <input
@@ -138,9 +166,16 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
               onChange={(e) => setTolerance(Number(e.target.value))}
             />
           </label>
-          <button type="button" onClick={handleSave}>
-            가이드라인 저장
-          </button>
+          <div className="save-form-actions">
+            <button type="button" onClick={handleSave}>
+              {editingId ? "수정 저장" : "가이드라인 저장"}
+            </button>
+            {editingId && (
+              <button type="button" className="secondary" onClick={handleCancelEdit}>
+                수정 취소
+              </button>
+            )}
+          </div>
         </div>
       )}
 
@@ -153,9 +188,14 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
             <span>
               {g.name} ({JOINT_LABELS[g.targetJoint]})
             </span>
-            <button type="button" onClick={() => handleDelete(g.id)}>
-              삭제
-            </button>
+            <div className="guideline-actions">
+              <button type="button" className="secondary" onClick={() => handleEdit(g)}>
+                수정
+              </button>
+              <button type="button" onClick={() => handleDelete(g.id)}>
+                삭제
+              </button>
+            </div>
           </li>
         ))}
       </ul>

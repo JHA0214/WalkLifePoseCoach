@@ -176,6 +176,21 @@
   font-weight: 600;
 }
 
+.save-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.save-form-actions button {
+  flex: 1;
+}
+
+.save-form-actions button.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: inherit;
+}
+
 .status-message {
   font-size: 14px;
   color: var(--accent);
@@ -200,12 +215,22 @@
   font-size: 14px;
 }
 
+.guideline-actions {
+  display: flex;
+  gap: 6px;
+}
+
 .guideline-list button {
   padding: 4px 10px;
   border-radius: 6px;
   border: 1px solid var(--danger);
   background: transparent;
   color: var(--danger);
+}
+
+.guideline-list button.secondary {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .match-status {

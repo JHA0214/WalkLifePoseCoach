@@ -18,6 +18,16 @@ export async function createGuideline(draft: GuidelineDraft): Promise<Guideline>
   return res.json();
 }
 
+export async function updateGuideline(id: string, draft: GuidelineDraft): Promise<Guideline> {
+  const res = await fetch(`${API_BASE}/api/guidelines/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(draft),
+  });
+  if (!res.ok) throw new Error("가이드라인 수정에 실패했습니다");
+  return res.json();
+}
+
 export async function deleteGuideline(id: string): Promise<void> {
   const res = await fetch(`${API_BASE}/api/guidelines/${id}`, { method: "DELETE" });
   if (!res.ok && res.status !== 204) throw new Error("가이드라인 삭제에 실패했습니다");
