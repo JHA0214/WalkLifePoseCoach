@@ -1,5 +1,6 @@
 :root {
   --bg: #0f172a;
+  --bg-soft: #182338;
   --panel: #1e293b;
   --text: #e2e8f0;
   --text-muted: #94a3b8;
@@ -11,7 +12,8 @@
   font: 16px/1.5 system-ui, "Segoe UI", Roboto, sans-serif;
   color-scheme: dark;
   color: var(--text);
-  background: var(--bg);
+  background: linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 45%, var(--bg) 100%);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
 
