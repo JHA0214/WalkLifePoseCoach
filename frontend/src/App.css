@@ -61,13 +61,13 @@
 .mode-toggle {
   padding: 8px 16px;
   border-radius: 8px;
-  border: 1px solid var(--accent);
+  border: 1px solid #f59e0b;
   background: transparent;
-  color: var(--accent);
+  color: #f59e0b;
 }
 
 .mode-toggle:hover {
-  background: rgba(56, 189, 248, 0.1);
+  background: rgba(245, 158, 11, 0.1);
 }
 
 .status-error {
