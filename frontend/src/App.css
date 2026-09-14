@@ -70,6 +70,10 @@
   background: rgba(245, 158, 11, 0.1);
 }
 
+.accent-heading {
+  color: #f59e0b;
+}
+
 .status-error {
   color: var(--danger);
 }
