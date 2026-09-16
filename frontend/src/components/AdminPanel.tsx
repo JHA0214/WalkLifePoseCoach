@@ -44,6 +44,10 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
   }, [landmarks, recording, targetJoint]);
 
   function handleStartRecording() {
+    if (!landmarks) {
+      setStatusMessage("카메라가 연결되어 있지 않아 녹화를 시작할 수 없습니다. 카메라 권한을 허용해주세요.");
+      return;
+    }
     setRecordedPath([]);
     recordingStartRef.current = null;
     setStatusMessage(null);
@@ -131,6 +135,13 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
           ))}
         </select>
       </label>
+
+      {!recording && !landmarks && (
+        <p className="status-info">
+          카메라가 연결되지 않았습니다. 저장된 가이드라인은 확인·수정·삭제할 수 있지만, 새로 녹화하려면
+          카메라 권한이 필요합니다.
+        </p>
+      )}
 
       <div className="record-controls">
         {!recording ? (
