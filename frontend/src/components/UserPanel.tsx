@@ -39,9 +39,6 @@ export function UserPanel({ isInside, onSelectedGuidelineChange }: UserPanelProp
       <h2 className="accent-heading">사용자 모드</h2>
 
       {error && <p className="status-error">{error}</p>}
-      {guidelines.length === 0 && !error && (
-        <p className="status-info">저장된 가이드라인이 없습니다. 관리자 모드에서 먼저 등록해주세요.</p>
-      )}
 
       {guidelines.length > 0 && (
         <label>
