@@ -39,6 +39,7 @@ function App() {
           landmarks={landmarks}
           guideline={mode === "user" ? selectedGuideline : null}
           isInside={isInside}
+          modeLabel={mode === "user" ? "사용자 모드" : undefined}
         />
 
         {mode === "admin" ? (

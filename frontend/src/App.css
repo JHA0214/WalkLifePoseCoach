@@ -91,18 +91,18 @@
 .camera-stage {
   position: relative;
   width: 100%;
-  max-width: 960px;
+  max-width: 1200px;
+  flex: 1 1 640px;
   aspect-ratio: 4 / 3;
   background: #000;
   border-radius: 12px;
   overflow: hidden;
-  flex-shrink: 0;
 }
 
 @media (max-width: 640px) {
   .camera-stage {
     aspect-ratio: auto;
-    height: 80vh;
+    height: 85vh;
     max-width: 100%;
   }
 }
@@ -120,9 +120,23 @@
   object-fit: cover;
 }
 
+.camera-mode-label {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #f59e0b;
+  font-weight: 600;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .controls {
-  flex: 0 1 300px;
-  min-width: 260px;
+  flex: 0 1 260px;
+  min-width: 240px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;

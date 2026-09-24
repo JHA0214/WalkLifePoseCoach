@@ -36,8 +36,6 @@ export function UserPanel({ isInside, onSelectedGuidelineChange }: UserPanelProp
 
   return (
     <div className="controls">
-      <h2 className="accent-heading">사용자 모드</h2>
-
       {error && <p className="status-error">{error}</p>}
 
       {guidelines.length > 0 && (

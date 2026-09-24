@@ -28,9 +28,10 @@ interface PoseCanvasProps {
   landmarks: NormalizedLandmark[] | null;
   guideline?: Guideline | null;
   isInside?: boolean;
+  modeLabel?: string;
 }
 
-export function PoseCanvas({ videoRef, landmarks, guideline, isInside }: PoseCanvasProps) {
+export function PoseCanvas({ videoRef, landmarks, guideline, isInside, modeLabel }: PoseCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -121,6 +122,7 @@ export function PoseCanvas({ videoRef, landmarks, guideline, isInside }: PoseCan
     <div className="camera-stage">
       <video ref={videoRef} className="camera-video" autoPlay playsInline muted />
       <canvas ref={canvasRef} className="camera-canvas" />
+      {modeLabel && <div className="camera-mode-label">{modeLabel}</div>}
     </div>
   );
 }
