@@ -25,6 +25,12 @@
   .controls {
     padding: 10px;
     gap: 6px;
+    width: calc(100% + 16px);
+    margin: 0 -8px -8px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
   }
 
   .controls h2 {
