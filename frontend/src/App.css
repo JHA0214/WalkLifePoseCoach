@@ -7,6 +7,9 @@
 @media (max-width: 640px) {
   .app {
     padding: 8px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
   }
 
   .app-header {
@@ -24,6 +27,10 @@
 
   .panel {
     gap: 0;
+    flex: 1;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    min-height: 0;
   }
 
   .controls {
@@ -35,6 +42,7 @@
     border-left: none;
     border-right: none;
     border-bottom: none;
+    flex: 0 0 auto;
   }
 
   .controls h2 {
@@ -112,7 +120,8 @@
 @media (max-width: 640px) {
   .camera-stage {
     aspect-ratio: auto;
-    height: 85vh;
+    flex: 1 1 auto;
+    min-height: 0;
     max-width: 100%;
   }
 }
