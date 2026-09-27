@@ -34,6 +34,10 @@ export function UserPanel({ isInside, onSelectedGuidelineChange }: UserPanelProp
     onSelectedGuidelineChange(selected);
   }, [selected, onSelectedGuidelineChange]);
 
+  if (!error && guidelines.length === 0) {
+    return null;
+  }
+
   return (
     <div className="controls">
       {error && <p className="status-error">{error}</p>}
