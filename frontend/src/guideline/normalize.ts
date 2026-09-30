@@ -11,12 +11,22 @@ const RIGHT_SHOULDER = 12;
 const LEFT_HIP = 23;
 const RIGHT_HIP = 24;
 
-export const JOINT_INDEX: Record<TargetJoint, number> = {
+export const JOINT_INDEX: Record<Exclude<TargetJoint, "pelvis">, number> = {
   left_wrist: 15,
   right_wrist: 16,
   left_ankle: 27,
   right_ankle: 28,
 };
+
+// 관절의 절대좌표. 골반은 단일 랜드마크가 아니라 양쪽 엉덩이 중점으로 계산한다.
+function getJointRawPosition(landmarks: NormalizedLandmark[], joint: TargetJoint): Point {
+  if (joint === "pelvis") {
+    const lh = landmarks[LEFT_HIP];
+    const rh = landmarks[RIGHT_HIP];
+    return { x: (lh.x + rh.x) / 2, y: (lh.y + rh.y) / 2 };
+  }
+  return landmarks[JOINT_INDEX[joint]];
+}
 
 // 몸의 중심 = 양쪽 어깨/엉덩이 4점의 평균 위치
 export function getCenter(landmarks: NormalizedLandmark[]): Point {
@@ -47,7 +57,7 @@ export function getTorsoScale(landmarks: NormalizedLandmark[]): number {
 export function normalizeJointPosition(landmarks: NormalizedLandmark[], joint: TargetJoint): Point {
   const center = getCenter(landmarks);
   const scale = getTorsoScale(landmarks);
-  const p = landmarks[JOINT_INDEX[joint]];
+  const p = getJointRawPosition(landmarks, joint);
   return {
     x: (p.x - center.x) / scale,
     y: (p.y - center.y) / scale,

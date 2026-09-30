@@ -11,6 +11,7 @@ const JOINT_LABELS: Record<TargetJoint, string> = {
   right_wrist: "오른팔 (손목)",
   left_ankle: "왼다리 (발목)",
   right_ankle: "오른다리 (발목)",
+  pelvis: "골반",
 };
 
 const TAKES_REQUIRED = 3;
