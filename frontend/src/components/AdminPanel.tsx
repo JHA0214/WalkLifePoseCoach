@@ -153,7 +153,7 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
 
   return (
     <div className="controls">
-      <h2>관리자 모드 - 가이드라인 녹화</h2>
+      <h2>가이드라인 녹화</h2>
 
       <label>
         추적할 신체 부위
