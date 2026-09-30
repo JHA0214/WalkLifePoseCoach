@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useRef, type ReactNode, type RefObject } from "react";
 import type { NormalizedLandmark } from "@mediapipe/tasks-vision";
 import { denormalizePoint, getCenter } from "../guideline/normalize";
 import { computeJointAngles } from "../guideline/angles";
@@ -29,9 +29,10 @@ interface PoseCanvasProps {
   guideline?: Guideline | null;
   isInside?: boolean;
   modeLabel?: string;
+  topOverlay?: ReactNode;
 }
 
-export function PoseCanvas({ videoRef, landmarks, guideline, isInside, modeLabel }: PoseCanvasProps) {
+export function PoseCanvas({ videoRef, landmarks, guideline, isInside, modeLabel, topOverlay }: PoseCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -122,6 +123,7 @@ export function PoseCanvas({ videoRef, landmarks, guideline, isInside, modeLabel
     <div className="camera-stage">
       <video ref={videoRef} className="camera-video" autoPlay playsInline muted />
       <canvas ref={canvasRef} className="camera-canvas" />
+      {topOverlay && <div className="camera-top-overlay">{topOverlay}</div>}
       {modeLabel && <div className="camera-mode-label">{modeLabel}</div>}
     </div>
   );
