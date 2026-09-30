@@ -16,6 +16,7 @@ export const JOINT_INDEX: Record<Exclude<TargetJoint, "pelvis">, number> = {
   right_wrist: 16,
   left_ankle: 27,
   right_ankle: 28,
+  head: 0,
 };
 
 // 관절의 절대좌표. 골반은 단일 랜드마크가 아니라 양쪽 엉덩이 중점으로 계산한다.

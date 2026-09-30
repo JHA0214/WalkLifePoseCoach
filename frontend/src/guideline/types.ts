@@ -1,4 +1,4 @@
-export type TargetJoint = "left_wrist" | "right_wrist" | "left_ankle" | "right_ankle" | "pelvis";
+export type TargetJoint = "left_wrist" | "right_wrist" | "left_ankle" | "right_ankle" | "pelvis" | "head";
 
 export interface PathPoint {
   t: number;

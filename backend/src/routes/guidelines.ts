@@ -2,7 +2,7 @@ import { Router } from "express";
 import { randomUUID } from "node:crypto";
 import { db } from "../db.js";
 
-const TARGET_JOINTS = ["left_wrist", "right_wrist", "left_ankle", "right_ankle", "pelvis"] as const;
+const TARGET_JOINTS = ["left_wrist", "right_wrist", "left_ankle", "right_ankle", "pelvis", "head"] as const;
 
 interface GuidelineRow {
   id: string;
