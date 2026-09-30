@@ -30,9 +30,18 @@ interface PoseCanvasProps {
   isInside?: boolean;
   modeLabel?: string;
   topOverlay?: ReactNode;
+  statusOverlay?: ReactNode;
 }
 
-export function PoseCanvas({ videoRef, landmarks, guideline, isInside, modeLabel, topOverlay }: PoseCanvasProps) {
+export function PoseCanvas({
+  videoRef,
+  landmarks,
+  guideline,
+  isInside,
+  modeLabel,
+  topOverlay,
+  statusOverlay,
+}: PoseCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -124,6 +133,7 @@ export function PoseCanvas({ videoRef, landmarks, guideline, isInside, modeLabel
       <video ref={videoRef} className="camera-video" autoPlay playsInline muted />
       <canvas ref={canvasRef} className="camera-canvas" />
       {topOverlay && <div className="camera-top-overlay">{topOverlay}</div>}
+      {statusOverlay && <div className="camera-status-overlay">{statusOverlay}</div>}
       {modeLabel && <div className="camera-mode-label">{modeLabel}</div>}
     </div>
   );

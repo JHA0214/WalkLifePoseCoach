@@ -24,10 +24,6 @@ function App() {
 
   return (
     <div className="app">
-      {(cameraError || modelError) && <p className="status-error">{cameraError ?? modelError}</p>}
-      {!cameraError && !ready && <p className="status-info">카메라를 시작하는 중...</p>}
-      {ready && modelLoading && <p className="status-info">포즈 인식 모델을 불러오는 중...</p>}
-
       <div className="panel">
         <PoseCanvas
           videoRef={videoRef}
@@ -40,6 +36,15 @@ function App() {
               <h1>WalkLifePoseCoach</h1>
               <ModeToggleButton mode={mode} onToggle={() => setMode((m) => (m === "user" ? "admin" : "user"))} />
             </>
+          }
+          statusOverlay={
+            (cameraError || modelError) ? (
+              <p className="status-error">{cameraError ?? modelError}</p>
+            ) : !ready ? (
+              <p className="status-info">카메라를 시작하는 중...</p>
+            ) : modelLoading ? (
+              <p className="status-info">포즈 인식 모델을 불러오는 중...</p>
+            ) : null
           }
         />
 
