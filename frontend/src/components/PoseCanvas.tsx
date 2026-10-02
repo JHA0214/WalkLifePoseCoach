@@ -5,7 +5,9 @@ import { computeJointAngles } from "../guideline/angles";
 import type { Guideline } from "../guideline/types";
 
 // BlazePose 33포인트 중 0~10번은 얼굴(코/눈/귀/입), 15~22번은 손(손목/손가락) 랜드마크 — 점 표시에서 제외한다.
+// 단, 0번(코)은 "머리" 추적 대상 관절로 쓰이므로 점을 표시해야 한다.
 const FACE_LANDMARK_COUNT = 11;
+const HEAD_LANDMARK_INDEX = 0;
 const HAND_LANDMARK_RANGE = [15, 22] as const;
 
 const CONNECTIONS: [number, number][] = [
@@ -90,7 +92,7 @@ export function PoseCanvas({
 
       ctx.fillStyle = "#facc15";
       landmarks.forEach((p, i) => {
-        if (i < FACE_LANDMARK_COUNT) return;
+        if (i !== HEAD_LANDMARK_INDEX && i < FACE_LANDMARK_COUNT) return;
         if (i >= HAND_LANDMARK_RANGE[0] && i <= HAND_LANDMARK_RANGE[1]) return;
         ctx.beginPath();
         ctx.arc(p.x * width, p.y * height, 4, 0, Math.PI * 2);
