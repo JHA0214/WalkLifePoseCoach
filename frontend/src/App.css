@@ -179,6 +179,10 @@
   transition: color 0.15s ease;
 }
 
+.camera-mode-label.safe {
+  color: var(--success);
+}
+
 .camera-mode-label.danger {
   color: var(--danger);
 }
