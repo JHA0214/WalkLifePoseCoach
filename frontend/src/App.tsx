@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCamera } from "./camera/useCamera";
 import { usePoseLandmarker } from "./camera/usePoseLandmarker";
+import { useGroundContact } from "./camera/useGroundContact";
 import { normalizeJointPosition } from "./guideline/normalize";
 import { isInsideGuideline } from "./guideline/matchGuideline";
 import type { Guideline } from "./guideline/types";
@@ -15,6 +16,7 @@ function App() {
   const [mode, setMode] = useState<Mode>("user");
   const { landmarks, loading: modelLoading, error: modelError } = usePoseLandmarker(videoRef, ready);
   const [selectedGuideline, setSelectedGuideline] = useState<Guideline | null>(null);
+  const isAirborne = useGroundContact(landmarks);
 
   let isInside = false;
   if (mode === "user" && selectedGuideline && landmarks) {
@@ -31,6 +33,7 @@ function App() {
           guideline={mode === "user" ? selectedGuideline : null}
           isInside={isInside}
           modeLabel={mode === "user" ? "사용자 모드" : "관리자 모드"}
+          modeLabelDanger={mode === "user" && isAirborne}
           topOverlay={
             <>
               <h1>WalkLifePoseCoach</h1>

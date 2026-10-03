@@ -176,6 +176,11 @@
   font-size: 14px;
   pointer-events: none;
   z-index: 2;
+  transition: color 0.15s ease;
+}
+
+.camera-mode-label.danger {
+  color: var(--danger);
 }
 
 .controls {

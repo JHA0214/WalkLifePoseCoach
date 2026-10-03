@@ -31,6 +31,7 @@ interface PoseCanvasProps {
   guideline?: Guideline | null;
   isInside?: boolean;
   modeLabel?: string;
+  modeLabelDanger?: boolean;
   topOverlay?: ReactNode;
   statusOverlay?: ReactNode;
 }
@@ -41,6 +42,7 @@ export function PoseCanvas({
   guideline,
   isInside,
   modeLabel,
+  modeLabelDanger,
   topOverlay,
   statusOverlay,
 }: PoseCanvasProps) {
@@ -136,7 +138,9 @@ export function PoseCanvas({
       <canvas ref={canvasRef} className="camera-canvas" />
       {topOverlay && <div className="camera-top-overlay">{topOverlay}</div>}
       {statusOverlay && <div className="camera-status-overlay">{statusOverlay}</div>}
-      {modeLabel && <div className="camera-mode-label">{modeLabel}</div>}
+      {modeLabel && (
+        <div className={`camera-mode-label${modeLabelDanger ? " danger" : ""}`}>{modeLabel}</div>
+      )}
     </div>
   );
 }
