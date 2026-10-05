@@ -33,7 +33,7 @@ function App() {
           guideline={mode === "user" ? selectedGuideline : null}
           isInside={isInside}
           modeLabel={mode === "user" ? "사용자 모드" : "관리자 모드"}
-          modeLabelState={mode === "user" ? (isAirborne ? "danger" : "safe") : "neutral"}
+          modeLabelState={isAirborne ? "danger" : "safe"}
           topOverlay={
             <>
               <h1>WalkLifePoseCoach</h1>
