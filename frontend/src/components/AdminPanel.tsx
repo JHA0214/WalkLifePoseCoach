@@ -19,9 +19,10 @@ const TAKES_REQUIRED = 3;
 
 interface AdminPanelProps {
   landmarks: NormalizedLandmark[] | null;
+  groundedSeconds: number;
 }
 
-export function AdminPanel({ landmarks }: AdminPanelProps) {
+export function AdminPanel({ landmarks, groundedSeconds }: AdminPanelProps) {
   const [targetJoint, setTargetJoint] = useState<TargetJoint>("left_wrist");
   const [recording, setRecording] = useState(false);
   const [recordedPath, setRecordedPath] = useState<PathPoint[]>([]);
@@ -156,6 +157,8 @@ export function AdminPanel({ landmarks }: AdminPanelProps) {
   return (
     <div className="controls">
       <h2>가이드라인 녹화</h2>
+
+      <p className="status-info">지면 접촉 시간: {groundedSeconds.toFixed(1)}초</p>
 
       <label>
         추적할 신체 부위

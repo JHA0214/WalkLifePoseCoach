@@ -16,7 +16,7 @@ function App() {
   const [mode, setMode] = useState<Mode>("user");
   const { landmarks, loading: modelLoading, error: modelError } = usePoseLandmarker(videoRef, ready);
   const [selectedGuideline, setSelectedGuideline] = useState<Guideline | null>(null);
-  const isAirborne = useGroundContact(landmarks);
+  const { isAirborne, groundedSeconds } = useGroundContact(landmarks);
 
   let isInside = false;
   if (mode === "user" && selectedGuideline && landmarks) {
@@ -52,7 +52,7 @@ function App() {
         />
 
         {mode === "admin" ? (
-          <AdminPanel landmarks={landmarks} />
+          <AdminPanel landmarks={landmarks} groundedSeconds={groundedSeconds} />
         ) : (
           <UserPanel isInside={isInside} onSelectedGuidelineChange={setSelectedGuideline} />
         )}

@@ -10,17 +10,33 @@ const AIRBORNE_RATIO = 0.15;
 // 기준 지면 높이가 카메라와의 거리 변화 등으로 서서히 보정되는 속도(0~1).
 const GROUND_DECAY = 0.01;
 
-// 양발 모두 기준 지면보다 일정 이상 떠 있으면(점프 등) true를 반환한다.
+export interface GroundContactState {
+  isAirborne: boolean;
+  groundedSeconds: number;
+}
+
+// 양발 모두 기준 지면보다 일정 이상 떠 있으면(점프 등) 공중으로 판정하고,
+// 공중이 아닌 누적 시간(지면에 닿아있던 시간)을 함께 추적한다.
 // 한쪽 발만 뜨는 걷기/제자리걸음 동작은 공중 판정에서 제외된다.
-export function useGroundContact(landmarks: NormalizedLandmark[] | null): boolean {
+export function useGroundContact(landmarks: NormalizedLandmark[] | null): GroundContactState {
   const groundYRef = useRef<{ left: number | null; right: number | null }>({ left: null, right: null });
-  const [isAirborne, setIsAirborne] = useState(false);
+  const lastTimeRef = useRef<number | null>(null);
+  const groundedMsRef = useRef(0);
+  const [state, setState] = useState<GroundContactState>({ isAirborne: false, groundedSeconds: 0 });
 
   useEffect(() => {
-    if (!landmarks) return;
+    if (!landmarks) {
+      // 추적이 끊긴 동안의 공백은 접촉 시간에 반영하지 않는다.
+      lastTimeRef.current = null;
+      return;
+    }
     const left = landmarks[LEFT_ANKLE];
     const right = landmarks[RIGHT_ANKLE];
     if (!left || !right) return;
+
+    const now = performance.now();
+    const dt = lastTimeRef.current === null ? 0 : now - lastTimeRef.current;
+    lastTimeRef.current = now;
 
     const threshold = getTorsoScale(landmarks) * AIRBORNE_RATIO;
     const ground = groundYRef.current;
@@ -36,8 +52,14 @@ export function useGroundContact(landmarks: NormalizedLandmark[] | null): boolea
 
     const leftAirborne = ground.left - left.y > threshold;
     const rightAirborne = ground.right - right.y > threshold;
-    setIsAirborne(leftAirborne && rightAirborne);
+    const airborne = leftAirborne && rightAirborne;
+
+    if (!airborne) {
+      groundedMsRef.current += dt;
+    }
+
+    setState({ isAirborne: airborne, groundedSeconds: groundedMsRef.current / 1000 });
   }, [landmarks]);
 
-  return isAirborne;
+  return state;
 }
